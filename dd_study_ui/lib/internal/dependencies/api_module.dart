@@ -54,7 +54,7 @@ class ApiModule
           catch(e)
           {
             var service = AuthService();
-            if(await service.checkAuth())
+            //if(await service.checkAuth())
             {
               await service.logout();
               AppNavigator.toLoader();

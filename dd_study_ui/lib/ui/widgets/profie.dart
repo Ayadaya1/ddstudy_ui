@@ -1,4 +1,9 @@
+import 'dart:io';
+
+import 'package:dd_study_ui/internal/dependencies/repository_module.dart';
+import 'package:dd_study_ui/ui/common/cam_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/services/auth_service.dart';
@@ -6,13 +11,13 @@ import '../../domain/models/user.dart';
 import '../../internal/config/app_config.dart';
 import '../../internal/config/shared_prefs.dart';
 import '../../internal/config/token_secure_storage.dart';
-import 'app_navigator.dart';
+import '../roots/app_navigator.dart';
 
 
 class _ViewModel  extends ChangeNotifier {
   BuildContext context;
   final _authService = AuthService();
-
+  final _api = RepositoryModule.apiRepository();
   _ViewModel({required this.context})
   {
     asyncInit();
@@ -35,13 +40,51 @@ class _ViewModel  extends ChangeNotifier {
     var token = await TokenStorage.getAccessToken();
     headers = {"Authorization": "Bearer $token"};
     user = await SharedPrefs.getStoredUser();
+    var img = await NetworkAssetBundle(Uri.parse("$baseUrl${user!.avatar}")).load("$baseUrl${user!.avatar}");
+      avatar =  Image.memory(img.buffer.asUint8List());
+    
   }
   
   void _logout () 
   {
-     _authService.logout();
+     _authService.logout().then((value) => AppNavigator.toLoader());
   }
 
+  String? _imagePath;
+  String? get imagePath => _imagePath;
+  set imagePath(String? val)
+  {
+    _imagePath = val;
+    notifyListeners();
+  }
+  Image? _avatar;
+  Image? get avatar => _avatar;
+  set avatar(Image? val)
+  {
+    _avatar = val;
+    notifyListeners();
+  }
+
+  Future changePhoto() async
+  {
+    await Navigator.of(context).push(MaterialPageRoute(builder: (newContext)=>
+    Scaffold(backgroundColor: Colors.black, appBar: AppBar(backgroundColor: Colors.black,),body:SafeArea(child: CamWidget(onFile: (file)
+    {
+      imagePath = file.path;
+      Navigator.of(newContext).pop();
+    }),))));
+    if(_imagePath!=null)
+    {
+    avatar = null;
+    var t = await _api.uploadTemp(files: [File(imagePath!)]);
+    if(t.isNotEmpty)
+    {
+      await _api.addAvatarToUser(t.first);
+      var img = await NetworkAssetBundle(Uri.parse("$baseUrl${user!.avatar}")).load("$baseUrl${user!.avatar}");
+      avatar =  Image.memory(img.buffer.asUint8List());
+    }
+    }
+  }
   
 }
 
@@ -51,6 +94,10 @@ class Profile extends StatelessWidget {
   Widget build(BuildContext context) {
     var viewModel = context.watch<_ViewModel>();
     return Scaffold(
+      floatingActionButton: FloatingActionButton(onPressed: (){
+        AppNavigator.toAddPost();
+      }, 
+      child: const Icon(Icons.add),),
       appBar: AppBar(title:  
       
             viewModel.user!=null&&viewModel.headers!=null?
@@ -58,7 +105,7 @@ class Profile extends StatelessWidget {
             "ID: ${viewModel.user!.id}",
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(
+            style: const TextStyle(
             color:  Color.fromARGB(255, 51, 50, 47),
             fontWeight: FontWeight.w900,
             fontStyle: FontStyle.italic,
@@ -78,15 +125,17 @@ class Profile extends StatelessWidget {
         (
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          GestureDetector(child:
           CircleAvatar(
             backgroundColor: Colors.blueAccent,
             radius: 120,
             child: CircleAvatar(
+              
               radius:110,
-              backgroundImage: NetworkImage(
-                    "$baseUrl${viewModel.user!.avatar}",
-                    headers: viewModel.headers),
+              foregroundImage: viewModel.avatar?.image,
             ),
+          ),
+          onDoubleTap: viewModel.changePhoto,
           ),
           Text(
             "${viewModel.user!.name}",

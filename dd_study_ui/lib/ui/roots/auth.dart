@@ -89,6 +89,10 @@ class _ViewModel extends ChangeNotifier
       state = state.copyWith(errorText: "Неверный логин или пароль");
     }
   }
+  void toRegistration()
+  {
+    AppNavigator.toRegistration();
+  }
 }
 
 
@@ -113,6 +117,13 @@ class Auth extends StatelessWidget
             TextField(decoration: const InputDecoration(hintText: "Введите логин "), keyboardType: TextInputType.emailAddress, controller: viewModel.loginTec,),
             TextField(decoration: const InputDecoration(hintText: "Введите пароль ",),obscureText: true, controller: viewModel.passwordTec,),
             ElevatedButton(onPressed: viewModel.checkFields()? viewModel.login:null , child: const Text("Войти")),
+            GestureDetector(
+              onTap: viewModel.toRegistration,
+              child: const Text("Регистрация", style: TextStyle(
+                color: Colors.blue,
+                fontStyle: FontStyle.italic),),
+
+            ),
             if(viewModel.state.isLoading) const CircularProgressIndicator(),
            ],
 

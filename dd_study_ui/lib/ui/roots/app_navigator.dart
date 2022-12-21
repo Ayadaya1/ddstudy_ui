@@ -1,13 +1,15 @@
 import 'package:dd_study_ui/ui/roots/app.dart';
 import 'package:dd_study_ui/ui/roots/loader.dart';
-import 'package:dd_study_ui/ui/roots/profie.dart';
+import 'package:dd_study_ui/ui/widgets/add_post.dart';
+import 'package:dd_study_ui/ui/widgets/profie.dart';
+import 'package:dd_study_ui/ui/roots/registration.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../domain/models/user.dart';
 import 'auth.dart';
 import 'home.dart';
 import 'app.dart';
-import 'profie.dart';
+import '../widgets/profie.dart';
 
 class NavigationRoutes
 {
@@ -15,6 +17,8 @@ class NavigationRoutes
   static const auth = "/auth";
   static const app = "/app";
   static const profile = "/mypage";
+  static const registration = "/register";
+  static const addPost = "/add_post";
 }
 
 class AppNavigator
@@ -39,6 +43,15 @@ class AppNavigator
     key.currentState?.pushNamed(NavigationRoutes.profile, arguments: {"Token":token, "User":user}); //Не работает так, как хотелось бы, но буду стараться довести до ума.
   }
 
+  static void toRegistration()
+  {
+    key.currentState?.pushNamed(NavigationRoutes.registration);
+  }
+  static void toAddPost()
+  {
+    key.currentState?.pushNamed(NavigationRoutes.addPost);
+  }
+
   static Route<dynamic>? onGeneratedRoute(RouteSettings settings, BuildContext context)
   {
     switch(settings.name)
@@ -51,6 +64,10 @@ class AppNavigator
         return PageRouteBuilder(pageBuilder: (_,__,___) => AppMain.create());
       case NavigationRoutes.profile:
         return PageRouteBuilder(pageBuilder: (_,__,___) => Profile.create());
+      case NavigationRoutes.registration:
+        return PageRouteBuilder(pageBuilder: (_,__,___) => Registration.create());
+      case NavigationRoutes.addPost:
+        return PageRouteBuilder(pageBuilder: (_,__,___) => AddPost.create());
     }
     return null;
   }

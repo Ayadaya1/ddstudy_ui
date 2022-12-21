@@ -1,23 +1,25 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'user.dart';
+part of 'register_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-User _$UserFromJson(Map<String, dynamic> json) => User(
-      avatar: json['avatar'] as String,
-      id: json['id'] as String,
+RegisterModel _$RegisterModelFromJson(Map<String, dynamic> json) =>
+    RegisterModel(
       name: json['name'] as String,
       email: json['email'] as String,
+      password: json['password'] as String,
+      retryPassword: json['retryPassword'] as String,
       birthDate: json['birthDate'] as String,
     );
 
-Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
-      'id': instance.id,
-      'avatar': instance.avatar,
+Map<String, dynamic> _$RegisterModelToJson(RegisterModel instance) =>
+    <String, dynamic>{
       'name': instance.name,
       'email': instance.email,
+      'password': instance.password,
+      'retryPassword': instance.retryPassword,
       'birthDate': instance.birthDate,
     };
