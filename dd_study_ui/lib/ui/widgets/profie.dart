@@ -106,10 +106,11 @@ class Profile extends StatelessWidget {
   Widget build(BuildContext context) {
     var viewModel = context.watch<_ViewModel>();
     return Scaffold(
-      floatingActionButton: FloatingActionButton(onPressed: (){
+      floatingActionButton: viewModel.owner == viewModel.user?FloatingActionButton(onPressed: (){
         AppNavigator.toAddPost();
       }, 
-      child: const Icon(Icons.add),),
+      child: const Icon(Icons.add),):
+      null,
       appBar: AppBar(title:  
       
             viewModel.owner!=null&&viewModel.headers!=null?
@@ -124,11 +125,11 @@ class Profile extends StatelessWidget {
             fontFamily: 'Open Sans',
             fontSize: 12),
             ): const Text("Загрузка"),
-            actions: [
+            actions: viewModel.owner == viewModel.user?[
               IconButton(onPressed: (){}, icon: const Icon(Icons.settings)),
               IconButton(onPressed: viewModel._logout, icon: const Icon(Icons.exit_to_app_outlined)),
 
-            ],
+            ]:null,
             ),
 
       body: SafeArea(child:

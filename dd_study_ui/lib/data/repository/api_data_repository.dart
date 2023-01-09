@@ -91,4 +91,9 @@ class ApiDataRepository extends ApiRepository
   Future<User?> getUserById(String userId) {
     return _api.getUserById(userId);
   }
+
+  @override
+  Future<CommentModel?> getCommentById(String commentId) {
+    return _api.getCommentById(commentId);
+  }
 }

@@ -319,6 +319,30 @@ class _ApiClient implements ApiClient {
     return value;
   }
 
+  @override
+  Future<CommentModel?> getCommentById(commentId) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'commentId': commentId};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio
+        .fetch<Map<String, dynamic>?>(_setStreamType<CommentModel>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/api/Post/GetCommentById',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value =
+        _result.data == null ? null : CommentModel.fromJson(_result.data!);
+    return value;
+  }
+
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
     if (T != dynamic &&
         !(requestOptions.responseType == ResponseType.bytes ||

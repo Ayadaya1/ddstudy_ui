@@ -110,6 +110,7 @@ class _ViewModel  extends ChangeNotifier {
   void toComments(String postId) async
   {
     AppNavigator.toComments(postId);
+    notifyListeners();
   }
   void onclick()
   {
@@ -186,7 +187,7 @@ class AppMain extends StatelessWidget {
                 GestureDetector(child:
                 CircleAvatar(
                   radius: 20.0,
-                  backgroundImage: NetworkImage(post.user.avatar),
+                  backgroundImage: NetworkImage("$baseUrl${viewModel.user!.avatar}"),
                 ),
                 onTap: () {
                   viewModel._myPage(post.user.id);

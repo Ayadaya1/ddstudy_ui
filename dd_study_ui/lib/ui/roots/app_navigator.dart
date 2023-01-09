@@ -51,7 +51,7 @@ class AppNavigator
   {
     key.currentState?.pushNamed(NavigationRoutes.addPost);
   }
-  static void toComments(String postId)
+  static void toComments(String postId) async
   {
     Map<String, dynamic> args = {'postId':postId};
     key.currentState?.pushNamed(NavigationRoutes.commentSection, arguments: args);

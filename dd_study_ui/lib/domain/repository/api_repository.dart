@@ -42,4 +42,6 @@ abstract class ApiRepository
   Future addCommentToPost(String postId, String comment);
 
   Future<User?> getUserById(String userId);
+
+  Future<CommentModel?> getCommentById(String commentId);
 }

@@ -2,6 +2,7 @@ import 'package:dd_study_ui/domain/db_model.dart';
 import 'package:dd_study_ui/domain/models/like_model.dart';
 import 'package:dio/dio.dart';
 
+import '../../domain/models/comment_model.dart';
 import '../../domain/models/post.dart';
 import '../../domain/models/post_content.dart';
 import '../../domain/models/post_model.dart';
@@ -50,5 +51,16 @@ class DataService
     }
         return res;
     }
+
+  Future <List<bool>> getCommentLikes(List<CommentModel> comments) async
+  {
+    var res = <bool>[];
+    for(var comment in comments)
+    {
+      LikeModel model = LikeModel(contentType: "Comment", contentId: comment.id);
+      res.add(await _api.checkLike(model));
+    }
+        return res;
+  }
 
 }

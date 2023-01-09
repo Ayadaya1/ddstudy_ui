@@ -50,4 +50,7 @@ abstract class ApiClient
 
   @GET("/api/User/GetUserById")
     Future<User?> getUserById(@Query("userId") String userId);
+  
+  @GET("/api/Post/GetCommentById")
+    Future<CommentModel?> getCommentById(@Query("commentId") String commentId);
 } 

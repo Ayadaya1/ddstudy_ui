@@ -1,4 +1,5 @@
-  import 'package:dd_study_ui/domain/models/comment_model.dart';
+  import 'package:dd_study_ui/data/services/data_service.dart';
+import 'package:dd_study_ui/domain/models/comment_model.dart';
 import 'package:dd_study_ui/domain/models/like_model.dart';
 import 'package:flutter/material.dart';
   import 'package:provider/provider.dart';
@@ -7,6 +8,7 @@ import '../../domain/models/post_model.dart';
 import '../../internal/config/app_config.dart';
 import '../../internal/dependencies/repository_module.dart';
 import '../roots/app.dart';
+import '../roots/app_navigator.dart';
 
 
 class _ViewModelState {
@@ -28,6 +30,7 @@ class _ViewModelState {
 
   class _ViewModel  extends ChangeNotifier {
     final _api = RepositoryModule.apiRepository();
+    final _dataService = DataService();
     String postId;
     BuildContext context;
 
@@ -65,7 +68,10 @@ class _ViewModelState {
       pager[ListIndex] = pageIndex;
       notifyListeners();
     }
-
+    void toProfile(String userId) async
+  {
+    AppNavigator.toMyPage(userId);
+  }
     List<CommentModel>? _comments;
     List<CommentModel>? get comments => _comments;
     set comments(List<CommentModel>? val)
@@ -80,6 +86,15 @@ class _ViewModelState {
     _post = val;
     notifyListeners();
   }
+
+  List<bool>? _likes;
+  List<bool>? get likes => _likes;
+  set likes(List<bool>? val)
+  {
+    _likes = val;
+    notifyListeners();
+  }
+
     bool? _liked;
     bool? get liked=>_liked;
     set liked(bool? val)
@@ -95,6 +110,10 @@ class _ViewModelState {
     if(_post!=null)
     {
       _liked = await _api.checkLike(LikeModel(contentType: "Post", contentId: post!.id));
+    }
+    if(comments!=null)
+    {
+      likes = await _dataService.getCommentLikes(comments!);
     }
     notifyListeners();
   }
@@ -113,9 +132,29 @@ class _ViewModelState {
     }).then((value) {notifyListeners();});
   }
 
+  void likeComment(String commentId, int index)
+  {
+    LikeModel model = LikeModel(contentType: "Comment", contentId: commentId);
+    _api.addLike(model).then((value) async  {comments![index]=  (await _api.getCommentById(commentId))!;
+    likes![index] = true;
+    }).then((value) {notifyListeners();});
+    
+    
+  }
+  void unlikeComment(String commentId, int index) async
+  {
+    LikeModel model = LikeModel(contentType: "Comment", contentId: commentId);
+    _api.removeLike(model).then((value) async  {comments![index]=  (await _api.getCommentById(commentId))!;
+    likes![index] = false;
+    }).then((value) {notifyListeners();});
+  }
+
   void addComment()
   {
-    _api.addCommentToPost(post!.id, state.comment!).then((value)async {comments = await _api.getAllComments(postId);}).then((value) {notifyListeners();});
+    _api.addCommentToPost(post!.id, state.comment!).then((value)async {
+      comments = await _api.getAllComments(postId);
+      likes = await _dataService.getCommentLikes(comments!);
+    }).then((value) {notifyListeners();});
   }
   }
 
@@ -151,9 +190,13 @@ class _ViewModelState {
             children: [
               Row(
               children: [
+                GestureDetector(
+                  child:
                 CircleAvatar(
                   radius: 20.0,
-                  backgroundImage: NetworkImage(post.user.avatar),
+                  backgroundImage: NetworkImage("$baseUrl${post.user.avatar}"),
+                ),
+                onTap:() async {viewModel.toProfile(post.user.id);}
                 ),
                 Expanded(
                   child: Column(
@@ -183,15 +226,20 @@ class _ViewModelState {
       else
       {
         var comment = viewModel.comments![listIndex-1];
+        var like = viewModel.likes![listIndex-1];
                       res = Container(
                         color: const Color.fromARGB(255, 78, 215, 233),
                         child: Column(
                         children: [
               Row(
               children: [
+                GestureDetector(
+                  child:
                 CircleAvatar(
                   radius: 20.0,
-                  backgroundImage: NetworkImage(comment.author.avatar),
+                  backgroundImage: NetworkImage("$baseUrl${comment.author.avatar}"),
+                ),
+                onTap: () async {viewModel.toProfile(comment.author.id);}
                 ),
                 Expanded(
                   child: Column(
@@ -203,7 +251,12 @@ class _ViewModelState {
                 ), 
                 Column(
                     children: [
-                      IconButton(icon: const Icon(Icons.favorite), onPressed: (){},),
+                      IconButton(icon: like?const Icon(Icons.favorite):const Icon(Icons.favorite_border), onPressed: (
+                      ){
+                        like?
+                        viewModel.unlikeComment(comment.id, listIndex-1):
+                        viewModel.likeComment(comment.id, listIndex-1);
+                      },),
                       Text(comment.likes.toString()),
                     ],
                   ),

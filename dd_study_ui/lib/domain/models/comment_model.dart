@@ -11,12 +11,14 @@ class CommentModel {
   final String created;
   final String text;
   final int likes;
+  final String id;
 
   CommentModel({
     required this.author,
     required this.created,
     required this.text,
     required this.likes,
+    required this.id
   });
 
   factory CommentModel.fromJson(Map<String,dynamic> json) => _$CommentModelFromJson(json);
