@@ -3,10 +3,12 @@ import 'package:dd_study_ui/ui/roots/loader.dart';
 import 'package:dd_study_ui/ui/widgets/add_post.dart';
 import 'package:dd_study_ui/ui/widgets/profie.dart';
 import 'package:dd_study_ui/ui/roots/registration.dart';
+import 'package:dd_study_ui/ui/widgets/settings.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../domain/models/user.dart';
 import '../widgets/comment_section.dart';
+import '../widgets/user_list.dart';
 import 'auth.dart';
 
 class NavigationRoutes
@@ -18,6 +20,8 @@ class NavigationRoutes
   static const registration = "/register";
   static const addPost = "/add_post";
   static const commentSection = "/comments";
+  static const userList = "/users";
+  static const settings = "/settings";
 }
 
 class AppNavigator
@@ -51,10 +55,19 @@ class AppNavigator
   {
     key.currentState?.pushNamed(NavigationRoutes.addPost);
   }
-  static void toComments(String postId) async
+  static Future toComments(String postId) async
   {
     Map<String, dynamic> args = {'postId':postId};
     key.currentState?.pushNamed(NavigationRoutes.commentSection, arguments: args);
+  }
+  static void toUserList(List<User>? users)
+  {
+    Map<String, dynamic> args = {'users':users};
+    key.currentState?.pushNamed(NavigationRoutes.userList, arguments: args);
+  }
+  static void toSettings() async
+  {
+    key.currentState?.pushNamed(NavigationRoutes.settings);
   }
 
   static Route<dynamic>? onGeneratedRoute(RouteSettings settings, BuildContext context)
@@ -85,6 +98,22 @@ class AppNavigator
         var postId = settings.arguments ?? {}["postId"];
         return PageRouteBuilder(pageBuilder: (_,__,___) => Comments.create(postId["postId"]));
       }
+      else
+      {
+        return null;
+      }
+      case NavigationRoutes.userList:
+      if(settings.arguments!=null)
+      {
+        var users = settings.arguments ?? {}["users"];
+        return PageRouteBuilder(pageBuilder: (_,__,___) => UserList.create(users["users"]));
+      }
+      else
+      {
+        return null;
+      }
+      case NavigationRoutes.settings:
+        return PageRouteBuilder(pageBuilder: (_,__,___) => Settings.create());
 }
     return null;
   }

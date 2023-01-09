@@ -18,7 +18,7 @@ class DB
     if(!_initialized)
     {
       var dbPath = await getDatabasesPath();
-      var path = join(dbPath, "db_v1.0.19.db");
+      var path = join(dbPath, "db_v1.0.20.db");
 
       _db = await openDatabase(path, version: 1, onCreate: _createDB );
       _initialized = true;
@@ -74,11 +74,11 @@ class DB
         }
       });
 
-      query = await _db.query(_dbName(T),where: whereBuilder.join(' and '), whereArgs: whereArgs, offset: skip, limit: take );
+      query = await _db.query(_dbName(T),where: whereBuilder.join(' and '), whereArgs: whereArgs, offset: skip, limit: take);
     }
     else
     {
-      query = await _db.query(_dbName(T), offset: skip, limit: take);
+      query = await _db.query(_dbName(T), offset: skip, limit: take,);
     }
     var resList = query.map((e) => _factories[T]!(e)).cast<T>();
 

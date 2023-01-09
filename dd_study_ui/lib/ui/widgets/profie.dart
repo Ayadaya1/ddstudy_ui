@@ -62,6 +62,32 @@ class _ViewModel  extends ChangeNotifier {
      _authService.logout().then((value) => AppNavigator.toLoader());
   }
 
+  void _toSubscribers() async
+  {
+    if(owner!=null)
+    {
+      var subscribers = await _api.getSubscribers(owner!.id);
+      AppNavigator.toUserList(subscribers);
+      notifyListeners();
+    }
+
+  }
+  void _toSubscriptions() async
+  {
+    if(owner!=null)
+    {
+      var subscriptions = await _api.getSubscriptions(owner!.id);
+      AppNavigator.toUserList(subscriptions);
+      notifyListeners();
+    }
+
+  }
+  void _toSettings() async
+  {
+    AppNavigator.toSettings();
+    notifyListeners();
+  }
+
   String? _imagePath;
   String? get imagePath => _imagePath;
   set imagePath(String? val)
@@ -126,7 +152,7 @@ class Profile extends StatelessWidget {
             fontSize: 12),
             ): const Text("Загрузка"),
             actions: viewModel.owner == viewModel.user?[
-              IconButton(onPressed: (){}, icon: const Icon(Icons.settings)),
+              IconButton(onPressed: (){viewModel._toSettings();}, icon: const Icon(Icons.settings)),
               IconButton(onPressed: viewModel._logout, icon: const Icon(Icons.exit_to_app_outlined)),
 
             ]:null,
@@ -186,6 +212,8 @@ class Profile extends StatelessWidget {
             fontFamily: 'Open Sans',
             fontSize: 15),
             ),
+            GestureDetector(
+              child:
           Text(
             "${viewModel.owner!.subscriberCount.toString()} подписчиков",
             maxLines: 3,
@@ -197,6 +225,10 @@ class Profile extends StatelessWidget {
             fontFamily: 'Open Sans',
             fontSize: 15),
             ),
+            onTap:(){viewModel._toSubscribers();}
+            ),
+            GestureDetector(
+              child:
           Text(
             "${viewModel.owner!.subscriptionCount.toString()} подписок",
             maxLines: 3,
@@ -207,6 +239,8 @@ class Profile extends StatelessWidget {
             fontStyle: FontStyle.italic,
             fontFamily: 'Open Sans',
             fontSize: 15),
+            ),
+            onTap:() => viewModel._toSubscriptions(),
             ),
       ],),):null,),
       

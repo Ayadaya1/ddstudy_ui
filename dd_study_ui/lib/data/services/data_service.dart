@@ -31,7 +31,7 @@ class DataService
     {
       var author = await DB.instance.get<User>(post.authorId);
       var contents =
-          (await DB.instance.getAll<PostContent>(whereMap: {"postId": post.id}))
+          (await DB.instance.getAll<PostContent>(whereMap: {"postId": post.id,}))
               .toList();
       if(author!=null)
       {
@@ -62,5 +62,13 @@ class DataService
     }
         return res;
   }
-
+  Future <List<bool>> getSubs(List<User> users) async
+  {
+    var res = <bool>[];
+    for(var user in users)
+    {
+      res.add(await _api.checkSub(user.id));
+    }
+        return res;
+  }
 }

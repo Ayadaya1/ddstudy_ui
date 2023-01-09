@@ -4,6 +4,7 @@ import 'package:dd_study_ui/domain/models/attach_meta.dart';
 import 'package:dd_study_ui/domain/models/comment_model.dart';
 import 'package:dd_study_ui/domain/models/like_model.dart';
 import 'package:dd_study_ui/domain/models/refresh_token_request.dart';
+import 'package:dd_study_ui/domain/models/settings_model.dart';
 import 'package:dd_study_ui/domain/models/token_request.dart';
 import 'package:dd_study_ui/domain/models/token_response.dart';
 
@@ -44,4 +45,18 @@ abstract class ApiRepository
   Future<User?> getUserById(String userId);
 
   Future<CommentModel?> getCommentById(String commentId);
+
+  Future<List<User>>? getSubscribers(String userId);
+
+  Future<List<User>>? getSubscriptions(String userId);
+
+  Future subscribe(String targetId);
+
+  Future unsubscribe(String targetId);
+
+  Future<bool> checkSub(String targetId);
+
+  Future<PrivacySettingsModel> getPrivacySettings();
+
+  Future changePrivacySettings(PrivacySettingsModel model);
 }

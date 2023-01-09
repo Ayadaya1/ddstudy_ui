@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dd_study_ui/domain/models/attach_meta.dart';
 import 'package:dd_study_ui/domain/models/comment_model.dart';
 import 'package:dd_study_ui/domain/models/like_model.dart';
+import 'package:dd_study_ui/domain/models/settings_model.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
 
@@ -53,4 +54,25 @@ abstract class ApiClient
   
   @GET("/api/Post/GetCommentById")
     Future<CommentModel?> getCommentById(@Query("commentId") String commentId);
+
+  @GET("/api/User/GetSubscribers")
+    Future<List<User>>? getSubscribers(@Query("userId")String userId);
+
+  @GET("/api/User/GetSubscriptions")
+    Future<List<User>>? getSubscriptions(@Query("userId")String userId);
+
+  @POST("/api/User/SubscribeToUser")
+    Future subscribe(@Query("targetId")String targetId);
+
+  @POST("/api/User/UnsubscribeFromUser")
+    Future unsubscribe(@Query("targetId")String targetId);
+
+  @GET("/api/User/CheckSubscription")
+    Future<bool> checkSub(@Query("targetId")String targetId);
+
+  @GET("/api/User/GetPrivacySettings")
+    Future<PrivacySettingsModel> getPrivacySettings();
+
+  @POST("/api/User/ChangePrivacySettings")
+    Future changePrivacySettings(@Body() PrivacySettingsModel model);
 } 

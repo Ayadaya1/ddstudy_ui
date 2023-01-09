@@ -7,6 +7,7 @@ import 'package:dd_study_ui/domain/models/comment_model.dart';
 import 'package:dd_study_ui/domain/models/like_model.dart';
 import 'package:dd_study_ui/domain/models/post_model.dart';
 import 'package:dd_study_ui/domain/models/register_model.dart';
+import 'package:dd_study_ui/domain/models/settings_model.dart';
 import 'package:dd_study_ui/domain/repository/api_repository.dart';
 
 import '../../domain/models/refresh_token_request.dart';
@@ -95,5 +96,40 @@ class ApiDataRepository extends ApiRepository
   @override
   Future<CommentModel?> getCommentById(String commentId) {
     return _api.getCommentById(commentId);
+  }
+
+  @override
+  Future<List<User>>? getSubscribers(String userId) {
+    return _api.getSubscribers(userId);
+  }
+
+  @override
+  Future<List<User>>? getSubscriptions(String userId) {
+    return _api.getSubscriptions(userId);
+  }
+
+  @override
+  Future subscribe(String targetId) {
+    return _api.subscribe(targetId);
+  }
+
+  @override
+  Future unsubscribe(String targetId) {
+    return _api.unsubscribe(targetId);
+  }
+
+  @override
+  Future<bool> checkSub(String targetId) {
+    return _api.checkSub(targetId);
+  }
+
+  @override
+  Future changePrivacySettings(PrivacySettingsModel model) {
+    return _api.changePrivacySettings(model);
+  }
+
+  @override
+  Future<PrivacySettingsModel> getPrivacySettings() {
+    return _api.getPrivacySettings();
   }
 }

@@ -107,9 +107,11 @@ class _ViewModel  extends ChangeNotifier {
   {
     AppNavigator.toMyPage(userId);
   }
-  void toComments(String postId) async
+  Future toComments(String postId) async
   {
-    AppNavigator.toComments(postId);
+    await AppNavigator.toComments(postId);
+    posts = await _dataService.getPosts();
+    likes = await _dataService.getLikes(posts!);
     notifyListeners();
   }
   void onclick()
