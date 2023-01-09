@@ -15,8 +15,8 @@ class PostModel {
   String? text;
   String? created;
   User user;
-  int? comments;
-  //int likes;
+  int comments;
+  int likes;
 
   PostModel({
     required this.id,
@@ -24,8 +24,8 @@ class PostModel {
     this.text,
     this.created,
     required this.user,
-    this.comments,
-    //required this.likes,
+    required this.comments,
+    required this.likes,
   });
 
   factory PostModel.fromJson(Map<String,dynamic> json) => _$PostModelFromJson(json);

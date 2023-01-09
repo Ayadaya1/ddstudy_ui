@@ -12,6 +12,8 @@ class User implements DbModel{
   final String name;
   final String email;
   final String birthDate;
+  final int subscriberCount;
+  final int subscriptionCount;
 
   User({
     required this.avatar,
@@ -19,6 +21,8 @@ class User implements DbModel{
     required this.name,
     required this.email,
     required this.birthDate,
+    required this.subscriberCount,
+    required this.subscriptionCount
   });
 
   factory User.fromJson(Map<String,dynamic> json) => _$UserFromJson(json);
@@ -40,7 +44,9 @@ class User implements DbModel{
     other.name == name &&
     other.email == email &&
     other.birthDate == birthDate &&
-    other.avatar == avatar;
+    other.avatar == avatar&&
+    other.subscriberCount == subscriberCount&&
+    other.subscriptionCount == subscriptionCount;
   }
   @override 
   int get hashCode
@@ -49,6 +55,8 @@ class User implements DbModel{
     name.hashCode ^
     email.hashCode ^
     birthDate.hashCode ^
-    avatar.hashCode;
+    avatar.hashCode ^
+    subscriberCount.hashCode ^
+    subscriptionCount.hashCode;
   }
 }

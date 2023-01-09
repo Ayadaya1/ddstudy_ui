@@ -128,6 +128,7 @@ class _ViewModel  extends ChangeNotifier {
     if(t.isNotEmpty)
     {
       files.add(t.first);
+      notifyListeners();
     }
     }
   }

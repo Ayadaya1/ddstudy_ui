@@ -12,12 +12,16 @@ class Post implements DbModel
   final String id;
   final String text;
   final String? authorId;
+  final int likes;
+  final int comments;
 
   Post(
     {
       required this.id,
       required this.text,
       this.authorId,
+      required this.likes,
+      required this.comments
     }
   );
 
@@ -32,13 +36,17 @@ class Post implements DbModel
 
   Post copyWith({
     String? id,
-    String? description,
+    String? text,
     String? authorId,
+    int? likes,
+    int? comments
   }) {
     return Post(
       id: id ?? this.id,
-      text: description ?? this.text,
+      text: text ?? this.text,
       authorId: authorId ?? this.authorId,
+      likes: likes??this.likes,
+      comments: comments??this.comments
     );
 }
 }

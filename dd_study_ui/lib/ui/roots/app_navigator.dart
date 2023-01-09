@@ -6,10 +6,8 @@ import 'package:dd_study_ui/ui/roots/registration.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../domain/models/user.dart';
+import '../widgets/comment_section.dart';
 import 'auth.dart';
-import 'home.dart';
-import 'app.dart';
-import '../widgets/profie.dart';
 
 class NavigationRoutes
 {
@@ -19,6 +17,7 @@ class NavigationRoutes
   static const profile = "/mypage";
   static const registration = "/register";
   static const addPost = "/add_post";
+  static const commentSection = "/comments";
 }
 
 class AppNavigator
@@ -38,9 +37,10 @@ class AppNavigator
     key.currentState?.pushNamedAndRemoveUntil(NavigationRoutes.app, ((route) => false));
   }
 
-  static void toMyPage({String? token, User? user})
+  static void toMyPage(String userId)
   {
-    key.currentState?.pushNamed(NavigationRoutes.profile, arguments: {"Token":token, "User":user}); //Не работает так, как хотелось бы, но буду стараться довести до ума.
+    Map<String, dynamic> args = {'userId':userId};
+    key.currentState?.pushNamed(NavigationRoutes.profile, arguments: args); 
   }
 
   static void toRegistration()
@@ -50,6 +50,11 @@ class AppNavigator
   static void toAddPost()
   {
     key.currentState?.pushNamed(NavigationRoutes.addPost);
+  }
+  static void toComments(String postId)
+  {
+    Map<String, dynamic> args = {'postId':postId};
+    key.currentState?.pushNamed(NavigationRoutes.commentSection, arguments: args);
   }
 
   static Route<dynamic>? onGeneratedRoute(RouteSettings settings, BuildContext context)
@@ -63,12 +68,24 @@ class AppNavigator
       case NavigationRoutes.app:
         return PageRouteBuilder(pageBuilder: (_,__,___) => AppMain.create());
       case NavigationRoutes.profile:
-        return PageRouteBuilder(pageBuilder: (_,__,___) => Profile.create());
+      if(settings.arguments!=null)
+      {
+        var userId = settings.arguments ?? {}["userId"];
+        return PageRouteBuilder(pageBuilder: (_,__,___) => Profile.create(userId["userId"]));
+      }
+      else 
+      {return null;}
       case NavigationRoutes.registration:
         return PageRouteBuilder(pageBuilder: (_,__,___) => Registration.create());
       case NavigationRoutes.addPost:
         return PageRouteBuilder(pageBuilder: (_,__,___) => AddPost.create());
-    }
+      case NavigationRoutes.commentSection:
+      if(settings.arguments!=null)
+      {
+        var postId = settings.arguments ?? {}["postId"];
+        return PageRouteBuilder(pageBuilder: (_,__,___) => Comments.create(postId["postId"]));
+      }
+}
     return null;
   }
 }

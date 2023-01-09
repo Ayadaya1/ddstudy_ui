@@ -1,5 +1,3 @@
-
-import 'package:camera/camera.dart';
 import 'package:dd_study_ui/ui/roots/app_navigator.dart';
 import 'package:dd_study_ui/ui/roots/loader.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +14,8 @@ class MyApp extends StatelessWidget {
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext 
+  context) {
     return MaterialApp(
       title: 'Flutter Demo',
       navigatorKey: AppNavigator.key ,

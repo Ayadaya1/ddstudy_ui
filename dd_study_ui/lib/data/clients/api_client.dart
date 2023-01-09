@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:dd_study_ui/domain/models/attach_meta.dart';
+import 'package:dd_study_ui/domain/models/comment_model.dart';
+import 'package:dd_study_ui/domain/models/like_model.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
 
@@ -14,7 +16,7 @@ abstract class ApiClient
 {
   factory ApiClient(Dio dio, {String? baseUrl}) = _ApiClient;
 
-  @POST("/api/User/GetCurrentUser")
+  @GET("/api/User/GetCurrentUser")
   Future<User?> getUser();
 
   @GET("/api/Post/GetTopPosts")
@@ -28,4 +30,24 @@ abstract class ApiClient
   
   @POST("/api/Post/AddPost")
     Future addPost(@Query("text")String text, @Body() List<AttachMeta> models);
-}
+
+  @POST("/api/Like/AddLike")
+    Future addLike(@Body() LikeModel model);
+
+  @POST("/api/Like/CheckLike")
+    Future<bool> checkLike(@Body() LikeModel model);
+
+  @POST("/api/Like/RemoveLike")
+    Future removeLike(@Body() LikeModel model);
+
+  @GET("/api/Post/GetPost") 
+    Future<PostModel> getPost(@Query("id")String postId);
+  @GET("/api/Post/GetAllComments")
+    Future<List<CommentModel>> getAllComments(@Query("postId")String postId);
+  
+  @POST("/api/Post/AddCommentToPost")
+    Future addComment(@Query("postId") String postId, @Query("comment") String comment);
+
+  @GET("/api/User/GetUserById")
+    Future<User?> getUserById(@Query("userId") String userId);
+} 

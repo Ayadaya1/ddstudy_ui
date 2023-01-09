@@ -14,7 +14,8 @@ PostModel _$PostModelFromJson(Map<String, dynamic> json) => PostModel(
       text: json['text'] as String?,
       created: json['created'] as String?,
       user: User.fromJson(json['user'] as Map<String, dynamic>),
-      comments: json['comments'] as int?,
+      comments: json['comments'] as int,
+      likes: json['likes'] as int,
     );
 
 Map<String, dynamic> _$PostModelToJson(PostModel instance) => <String, dynamic>{
@@ -24,4 +25,5 @@ Map<String, dynamic> _$PostModelToJson(PostModel instance) => <String, dynamic>{
       'created': instance.created,
       'user': instance.user,
       'comments': instance.comments,
+      'likes': instance.likes,
     };

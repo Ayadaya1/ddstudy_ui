@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'dart:ui';
 import 'package:dd_study_ui/internal/dependencies/repository_module.dart';
 import 'package:dd_study_ui/ui/common/cam_widget.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +18,8 @@ class _ViewModel  extends ChangeNotifier {
   BuildContext context;
   final _authService = AuthService();
   final _api = RepositoryModule.apiRepository();
-  _ViewModel({required this.context})
+  final String userId;
+  _ViewModel({required this.context, required this.userId})
   {
     asyncInit();
   }
@@ -33,15 +34,26 @@ class _ViewModel  extends ChangeNotifier {
     notifyListeners();
   }
 
+   User? _owner;
+
+  User? get owner => _owner;
+  set owner(User? val)
+  {
+    _owner = val;
+    notifyListeners();
+  }
+
   Map<String, String>? headers;
 
   void asyncInit() async
   {
+    owner = await _api.getUserById(userId);
     var token = await TokenStorage.getAccessToken();
     headers = {"Authorization": "Bearer $token"};
     user = await SharedPrefs.getStoredUser();
-    var img = await NetworkAssetBundle(Uri.parse("$baseUrl${user!.avatar}")).load("$baseUrl${user!.avatar}");
+    var img = await NetworkAssetBundle(Uri.parse("$baseUrl${owner!.avatar}")).load("$baseUrl${owner!.avatar}");
       avatar =  Image.memory(img.buffer.asUint8List());
+
     
   }
   
@@ -80,7 +92,7 @@ class _ViewModel  extends ChangeNotifier {
     if(t.isNotEmpty)
     {
       await _api.addAvatarToUser(t.first);
-      var img = await NetworkAssetBundle(Uri.parse("$baseUrl${user!.avatar}")).load("$baseUrl${user!.avatar}");
+      var img = await NetworkAssetBundle(Uri.parse("$baseUrl${owner!.avatar}")).load("$baseUrl${owner!.avatar}");
       avatar =  Image.memory(img.buffer.asUint8List());
     }
     }
@@ -100,9 +112,9 @@ class Profile extends StatelessWidget {
       child: const Icon(Icons.add),),
       appBar: AppBar(title:  
       
-            viewModel.user!=null&&viewModel.headers!=null?
+            viewModel.owner!=null&&viewModel.headers!=null?
             Text(
-            "ID: ${viewModel.user!.id}",
+            "ID: ${viewModel.owner!.id}",
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
@@ -113,13 +125,15 @@ class Profile extends StatelessWidget {
             fontSize: 12),
             ): const Text("Загрузка"),
             actions: [
+              IconButton(onPressed: (){}, icon: const Icon(Icons.settings)),
               IconButton(onPressed: viewModel._logout, icon: const Icon(Icons.exit_to_app_outlined)),
+
             ],
             ),
 
       body: SafeArea(child:
       Padding(padding:EdgeInsets.all(10),
-      child: viewModel.user!=null&&viewModel.headers!=null?
+      child: viewModel.owner!=null&&viewModel.headers!=null?
       SizedBox.expand(
         child: Column
         (
@@ -138,7 +152,7 @@ class Profile extends StatelessWidget {
           onDoubleTap: viewModel.changePhoto,
           ),
           Text(
-            "${viewModel.user!.name}",
+            "${viewModel.owner!.name}",
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
@@ -150,7 +164,7 @@ class Profile extends StatelessWidget {
             
             ),
             Text(
-            "${viewModel.user!.email}",
+            "${viewModel.owner!.email}",
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
@@ -161,7 +175,7 @@ class Profile extends StatelessWidget {
             fontSize: 20),
             ),
             Text(
-            "${viewModel.user!.birthDate.substring(0,10)}",
+            "${viewModel.owner!.birthDate.substring(0,10)}",
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
@@ -171,15 +185,35 @@ class Profile extends StatelessWidget {
             fontFamily: 'Open Sans',
             fontSize: 15),
             ),
-        
-        
+          Text(
+            "${viewModel.owner!.subscriberCount.toString()} подписчиков",
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+            color: Colors.grey[800],
+            fontWeight: FontWeight.w900,
+            fontStyle: FontStyle.italic,
+            fontFamily: 'Open Sans',
+            fontSize: 15),
+            ),
+          Text(
+            "${viewModel.owner!.subscriptionCount.toString()} подписок",
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+            color: Colors.grey[800],
+            fontWeight: FontWeight.w900,
+            fontStyle: FontStyle.italic,
+            fontFamily: 'Open Sans',
+            fontSize: 15),
+            ),
       ],),):null,),
       
     ));
   }
 
-  static Widget create()
+  static Widget create(String userId)
   {
-    return ChangeNotifierProvider(create: (BuildContext context) => _ViewModel(context: context), child: const Profile(),);
+    return ChangeNotifierProvider(create: (BuildContext context) => _ViewModel(context: context, userId: userId), child: const Profile(),);
   }
 }

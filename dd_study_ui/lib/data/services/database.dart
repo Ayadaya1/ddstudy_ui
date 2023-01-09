@@ -18,7 +18,7 @@ class DB
     if(!_initialized)
     {
       var dbPath = await getDatabasesPath();
-      var path = join(dbPath, "db_v1.0.9.db");
+      var path = join(dbPath, "db_v1.0.19.db");
 
       _db = await openDatabase(path, version: 1, onCreate: _createDB );
       _initialized = true;
@@ -27,7 +27,7 @@ class DB
 
   Future _createDB (Database db, int version) async
   {
-    var dbInitScript = await rootBundle.loadString('assets/db_init.sql');
+    var dbInitScript = await rootBundle.loadString('assets/db_init.sql'); 
     dbInitScript.split(';').forEach((element) async {
       if(element.isNotEmpty)
       {

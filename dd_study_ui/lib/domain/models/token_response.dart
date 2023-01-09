@@ -13,6 +13,8 @@ class TokenResponse {
     required this.refreshToken,
   });
 
+
+
   factory TokenResponse.fromJson(Map<String,dynamic> json) => _$TokenResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$TokenResponseToJson(this);

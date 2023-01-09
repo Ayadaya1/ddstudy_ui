@@ -1,13 +1,17 @@
 import 'package:dd_study_ui/domain/db_model.dart';
+import 'package:dd_study_ui/domain/models/like_model.dart';
+import 'package:dio/dio.dart';
 
 import '../../domain/models/post.dart';
 import '../../domain/models/post_content.dart';
 import '../../domain/models/post_model.dart';
 import '../../domain/models/user.dart';
+import '../../internal/dependencies/repository_module.dart';
 import 'database.dart';
 
 class DataService 
 {
+  final _api = RepositoryModule.apiRepository();
   Future cuUser(User user) async
   {
     await DB.instance.createUpdate(user);
@@ -30,9 +34,21 @@ class DataService
               .toList();
       if(author!=null)
       {
-        res.add(PostModel( id: post.id, attaches: contents, user: author, text: post.text));
+        res.add(PostModel( id: post.id, attaches: contents, user: author, text: post.text, likes: post.likes, comments: post.comments));
       }
     }
     return res;
   }
+
+  Future <List<bool>> getLikes(List<PostModel> posts) async
+  {
+    var res = <bool>[];
+    for(var post in posts)
+    {
+      LikeModel model = LikeModel(contentType: "Post", contentId: post.id);
+      res.add(await _api.checkLike(model));
+    }
+        return res;
+    }
+
 }

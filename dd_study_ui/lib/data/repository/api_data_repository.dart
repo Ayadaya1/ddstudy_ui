@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:dd_study_ui/data/clients/api_client.dart';
 import 'package:dd_study_ui/data/clients/auth_client.dart';
 import 'package:dd_study_ui/domain/models/attach_meta.dart';
+import 'package:dd_study_ui/domain/models/comment_model.dart';
+import 'package:dd_study_ui/domain/models/like_model.dart';
 import 'package:dd_study_ui/domain/models/post_model.dart';
 import 'package:dd_study_ui/domain/models/register_model.dart';
 import 'package:dd_study_ui/domain/repository/api_repository.dart';
@@ -55,5 +57,38 @@ class ApiDataRepository extends ApiRepository
     return _api.addPost(text, models);
   }
   
+  @override
+  Future addLike(LikeModel model) {
+    return _api.addLike(model);
+  }
 
+  @override
+  Future<bool> checkLike(LikeModel model) {
+    return _api.checkLike(model);
+  }
+
+  @override
+  Future removeLike(LikeModel model) {
+    return _api.removeLike(model);
+  }
+
+  @override
+  Future<PostModel> getPost(String postId) {
+    return _api.getPost(postId);
+  }
+
+  @override
+  Future<List<CommentModel>> getAllComments(String postId) {
+    return _api.getAllComments(postId);
+  }
+
+  @override
+  Future addCommentToPost(String postId, String comment) {
+    return _api.addComment(postId, comment);
+  }
+
+  @override
+  Future<User?> getUserById(String userId) {
+    return _api.getUserById(userId);
+  }
 }

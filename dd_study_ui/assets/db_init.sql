@@ -4,13 +4,17 @@ CREATE TABLE t_User
     [name] TEXT,
     email TEXT,
     birthDate TEXT NOT NULL,
-    avatar TEXT
+    avatar TEXT,
+    subscriberCount INT NOT NULL,
+    subscriptionCount INT NOT NULL
 );
 CREATE TABLE t_Post
 (
     id TEXT NOT NULL PRIMARY KEY,
     [text] TEXT,
     authorId TEXT NOT NULL, 
+    likes INT NOT NULL,
+    comments INT NOT NULL,
     CONSTRAINT author_fk FOREIGN KEY(authorId) REFERENCES t_User(id)
 );
 CREATE TABLE t_PostContent
