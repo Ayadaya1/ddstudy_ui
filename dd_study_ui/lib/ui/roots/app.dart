@@ -182,45 +182,105 @@ class AppMain extends StatelessWidget {
         {
           var post = posts[listIndex];
           var like = likes[listIndex];
-          res = Container(color: Colors.lightBlue, height: size.width, child: Column(
-            children: [
-              Row(
-              children: [
-                GestureDetector(child:
-                CircleAvatar(
-                  radius: 20.0,
-                  backgroundImage: NetworkImage("$baseUrl${viewModel.user!.avatar}"),
-                ),
-                onTap: () {
-                  viewModel._myPage(post.user.id);
-                }
-                ),
-                Expanded(
-                  child: Column(
+          res = Container(
+    color: Colors.lightBlue,
+    height: size.width,
+    child: Column(
+        children: [
+            Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Row(
                     children: [
-                      Text(post.user.name, style: const TextStyle(fontWeight: FontWeight.bold),),
-                      Text(post.text??""),
+                        GestureDetector(
+                            child: CircleAvatar(
+                                radius: 30.0,
+                                backgroundImage: NetworkImage("$baseUrl${viewModel.user!.avatar}"),
+                            ),
+                            onTap: () {
+                                viewModel._myPage(post.user.id);
+                            },
+                        ),
+                        SizedBox(width: 8.0),
+                        Expanded(
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                    Text(
+                                        post.user.name,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18.0,
+                                        ),
+                                    ),
+                                    SizedBox(height: 8.0),
+                                    Text(post.text ?? ""),
+                                ],
+                            ),
+                        ),
                     ],
-                  ),
                 ),
-              ],
             ),
-              Expanded(child:
-            PageView.builder(
-              onPageChanged: ((value) => viewModel.omPageChanged(listIndex, value)),
-              itemCount: post.attaches.length, itemBuilder: ( pageContext, pageIndex)=>Container
-            (color:Colors.white ,
-            child: Image(image: NetworkImage("$baseUrl${post.attaches[pageIndex].contentLink}")),))),
-            PageIndicator(count: post.attaches.length , current: viewModel.pager[listIndex]),
-            Row(children: [
-            IconButton(icon : (like)? const Icon(Icons.favorite) : const Icon(Icons.favorite_border), onPressed: () async{
-              like? viewModel.unlikePost(post.id, listIndex) :viewModel.likePost(post.id, listIndex) ;
-            },), Text(post.likes.toString(),),
-             IconButton(icon: const Icon(Icons.comment), onPressed: (){viewModel.toComments(post.id);},),
-              Text(post.comments.toString())
-            ],),
-          ]),
+            Expanded(
+                child: PageView.builder(
+                    onPageChanged: ((value) =>
+                        viewModel.omPageChanged(listIndex, value)),
+                    itemCount: post.attaches.length,
+                    itemBuilder: (pageContext, pageIndex) => Container(
+                        color: Colors.white,
+                        child: Image(
+                            image: NetworkImage(
+                                "$baseUrl${post.attaches[pageIndex].contentLink}"),
+                        ),
+                    ),
+                ),
+            ),
+            PageIndicator(
+                count: post.attaches.length,
+                current: viewModel.pager[listIndex],
+            ),
+            Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Row(
+                    children: [
+                        IconButton(
+                            icon: like
+                                ? Icon(Icons.favorite)
+                                : Icon(Icons.favorite_border),
+                            color: like ? Colors.red : Colors.black,
+                            onPressed: () async {
+                                like ? viewModel.unlikePost(post.id, listIndex) : viewModel.likePost(post.id, listIndex);
+                            },
+                        ),
+                        SizedBox(width: 8.0),
+                        Text(
+                            post.likes.toString(),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18.0,
+                            ),
+                            ),
+                        SizedBox(width: 8.0),
+                        IconButton(
+                            icon: Icon(Icons.comment),
+                            onPressed: () {
+                                viewModel.toComments(post.id);
+                            },
+                        ),
+                        SizedBox(width: 8.0),
+                        Text(
+                            post.comments.toString(),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18.0,
+                            ),
+                        ),
+                    ],
+                ),
+            ),
+        ],
+    ),
 );
+
         }
         else
         {
@@ -248,19 +308,35 @@ class AppMain extends StatelessWidget {
 class PageIndicator extends StatelessWidget {
   final int count;
   final int? current;
-  final double width;
-  const PageIndicator({Key? key, required this.count, required this.current, this.width = 10}): super(key: key);
+  final double size;
+  final Color activeColor;
+  final Color inactiveColor;
+
+  const PageIndicator({
+    Key? key,
+    required this.count,
+    required this.current,
+    this.size = 10,
+    this.activeColor = Colors.white,
+    this.inactiveColor = Colors.grey,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> widgets = <Widget>[];
-    for(var i = 0; i<count; i++)
-    {
-      widgets.add(Icon(i==(current??0)?Icons.circle : Icons.circle_outlined, size: width));
-    }
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: widgets,);
+      children: List.generate(count, (index) {
+        return Container(
+          width: size,
+          height: size,
+          margin: EdgeInsets.symmetric(horizontal: 3.0),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: current == index ? activeColor : inactiveColor,
+          ),
+        );
+      }),
+    );
   }
-
 }
+

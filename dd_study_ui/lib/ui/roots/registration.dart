@@ -95,8 +95,20 @@ class _ViewModel extends ChangeNotifier
     _state = _state.copyWith(isLoading: true);
 
      await _authService.register(state.email, state.name, state.password, state.retryPassword, state.birthDate)
-     .then((value) =>  _authService.auth(state.email, state.password))
-     .then((value) => AppNavigator.toHome());
+     .then((value) async   {
+      await _authService.auth(state.email, state.password);
+      notifyListeners();
+  })
+     .then((value)async { 
+      try {
+        await _authService.auth(state.email, state.password);
+        }
+        on Exception
+        {
+          print(Exception);
+        }
+     }
+     ).then((value) => AppNavigator.toHome());
 
   }
 }

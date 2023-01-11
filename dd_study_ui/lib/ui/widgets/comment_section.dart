@@ -186,41 +186,88 @@ class _ViewModelState {
         {
           if(listIndex==0)
           {
-          res = Container(color: Colors.lightBlue, height: size.width, child: Column(
-            children: [
-              Row(
-              children: [
-                GestureDetector(
-                  child:
-                CircleAvatar(
-                  radius: 20.0,
-                  backgroundImage: NetworkImage("$baseUrl${post.user.avatar}"),
-                ),
-                onTap:() async {viewModel.toProfile(post.user.id);}
-                ),
-                Expanded(
-                  child: Column(
+          res = Container(
+    color: Colors.lightBlue,
+    height: size.width,
+    child: Column(
+        children: [
+            Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Row(
                     children: [
-                      Text(post.user.name, style: const TextStyle(fontWeight: FontWeight.bold),),
-                      Text(post.text??""),
+                        GestureDetector(
+                            child: CircleAvatar(
+                                radius: 30.0,
+                                backgroundImage: NetworkImage("$baseUrl${post.user.avatar}"),
+                            ),
+                            onTap: () async {
+                                viewModel.toProfile(post.user.id);
+                            },
+                        ),
+                        SizedBox(width: 8.0),
+                        Expanded(
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                    Text(
+                                        post.user.name,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18.0,
+                                        ),
+                                    ),
+                                    SizedBox(height: 8.0),
+                                    Text(post.text ?? ""),
+                                ],
+                            ),
+                        ),
                     ],
-                  ),
                 ),
-              ],
             ),
-              Expanded(child:
-            PageView.builder(
-              onPageChanged: ((value) => viewModel.omPageChanged(listIndex, value)),
-              itemCount: post.attaches.length, itemBuilder: ( pageContext, pageIndex)=>Container
-            (color:Colors.white ,
-            child: Image(image: NetworkImage("$baseUrl${post.attaches[pageIndex].contentLink}")),))),
-            PageIndicator(count: post.attaches.length , current: viewModel.pager[listIndex]),
-            Row(children: [
-            IconButton(icon : (liked!)? const Icon(Icons.favorite) : const Icon(Icons.favorite_border), onPressed: () async{
-              liked? viewModel.unlikePost() :viewModel.likePost() ;
-            },), Text(post.likes.toString(),),
-            ],),
-          ]),
+            Expanded(
+                child: PageView.builder(
+                    onPageChanged: ((value) =>
+                        viewModel.omPageChanged(listIndex, value)),
+                    itemCount: post.attaches.length,
+                    itemBuilder: (pageContext, pageIndex) => Container(
+                        color: Colors.white,
+                        child: Image(
+                            image: NetworkImage(
+                                "$baseUrl${post.attaches[pageIndex].contentLink}"),
+                        ),
+                    ),
+                ),
+            ),
+            PageIndicator(
+                count: post.attaches.length,
+                current: viewModel.pager[listIndex],
+            ),
+            Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Row(
+                    children: [
+                        IconButton(
+                            icon: liked!
+                                ? Icon(Icons.favorite)
+                                : Icon(Icons.favorite_border),
+                            color: liked! ? Colors.red : Colors.black,
+                            onPressed: () async {
+                                liked? viewModel.unlikePost() : viewModel.likePost();
+                            },
+                        ),
+                        SizedBox(width: 8.0),
+                        Text(
+                            post.likes.toString(),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18.0,
+                            ),
+                        ),
+                    ],
+                ),
+            ),
+        ],
+    ),
 );
         }
       else
@@ -228,42 +275,69 @@ class _ViewModelState {
         var comment = viewModel.comments![listIndex-1];
         var like = viewModel.likes![listIndex-1];
                       res = Container(
-                        color: const Color.fromARGB(255, 78, 215, 233),
-                        child: Column(
-                        children: [
-              Row(
-              children: [
-                GestureDetector(
-                  child:
-                CircleAvatar(
-                  radius: 20.0,
-                  backgroundImage: NetworkImage("$baseUrl${comment.author.avatar}"),
-                ),
-                onTap: () async {viewModel.toProfile(comment.author.id);}
-                ),
-                Expanded(
-                  child: Column(
+    color: const Color.fromARGB(255, 78, 215, 233),
+    child: Column(
+        children: [
+            Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Row(
                     children: [
-                      Text(comment.author.name, style: const TextStyle(fontWeight: FontWeight.bold),),
-                      Text(comment.text),
+                        GestureDetector(
+                            child: CircleAvatar(
+                                radius: 30.0,
+                                backgroundImage: NetworkImage("$baseUrl${comment.author.avatar}"),
+                            ),
+                            onTap: () async {
+                                viewModel.toProfile(comment.author.id);
+                            },
+                        ),
+                        SizedBox(width: 8.0),
+                        Expanded(
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                    Text(
+                                        comment.author.name,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18.0,
+                                        ),
+                                    ),
+                                    SizedBox(height: 8.0),
+                                    Text(comment.text),
+                                ],
+                            ),
+                        ),
+                        Column(
+                            children: [
+                                IconButton(
+                                    icon: like
+                                        ? Icon(Icons.favorite)
+                                        : Icon(Icons.favorite_border),
+                                    color: Colors.red,
+                                    onPressed: () {
+                                        like
+                                            ? viewModel.unlikeComment(
+                                                comment.id, listIndex - 1)
+                                            : viewModel.likeComment(
+                                                comment.id, listIndex - 1);
+                                    },
+                                ),
+                                Text(
+                                    comment.likes.toString(),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18.0,
+                                    ),
+                                ),
+                            ],
+                        ),
                     ],
-                  ),
-                ), 
-                Column(
-                    children: [
-                      IconButton(icon: like?const Icon(Icons.favorite):const Icon(Icons.favorite_border), onPressed: (
-                      ){
-                        like?
-                        viewModel.unlikeComment(comment.id, listIndex-1):
-                        viewModel.likeComment(comment.id, listIndex-1);
-                      },),
-                      Text(comment.likes.toString()),
-                    ],
-                  ),
-              ],
+                ),
             ),
-                        
-                ]),);
+        ],
+    ),
+);
       } 
         
     }

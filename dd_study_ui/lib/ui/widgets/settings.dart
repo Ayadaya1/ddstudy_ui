@@ -16,19 +16,19 @@ class _ViewModel extends ChangeNotifier {
   void asyncInit() async
   {
     var settings = await _api.getPrivacySettings();
-    value1 = settings.postAccess;
-    value2 = settings.avatarAccess;
-    value3 = settings.commentAccess;
-    value4 = settings.messageAccess;
+    posts = settings.postAccess;
+    avatar = settings.avatarAccess;
+    comments = settings.commentAccess;
+    messages = settings.messageAccess;
     notifyListeners();
   }
-  int value1 = 0;
-  int value2 = 0;
-  int value3 = 0;
-  int value4 = 0;
+  int posts = 0;
+  int avatar = 0;
+  int comments = 0;
+  int messages = 0;
   void submit()
   {
-    PrivacySettingsModel model = PrivacySettingsModel(avatarAccess: value2, postAccess: value1, messageAccess: value4, commentAccess: value3);
+    PrivacySettingsModel model = PrivacySettingsModel(avatarAccess: avatar, postAccess: posts, messageAccess: messages, commentAccess: comments);
     _api.changePrivacySettings(model);
   }
   }
@@ -49,7 +49,7 @@ class Settings extends StatelessWidget {
           ListTile(
             title: const Text('Кто имеет доступ к моим постам?'),
             trailing: DropdownButton(
-              value: viewModel.value1,
+              value: viewModel.posts,
               items: [
                 const DropdownMenuItem(
                   value: 0,
@@ -61,7 +61,7 @@ class Settings extends StatelessWidget {
                 ),
               ],
               onChanged: (value) {
-                viewModel.value1 = value!;
+                viewModel.posts = value!;
                 viewModel.notifyListeners();
               },
             ),
@@ -69,7 +69,7 @@ class Settings extends StatelessWidget {
           ListTile(
             title: const Text('Кто может видеть мой аватар?'),
             trailing: DropdownButton(
-              value: viewModel.value2,
+              value: viewModel.avatar,
               items: [
                 DropdownMenuItem(
                   value: 0,
@@ -81,7 +81,7 @@ class Settings extends StatelessWidget {
                 ),
               ],
               onChanged: (value) {
-                viewModel.value2 = value!;
+                viewModel.avatar = value!;
                 viewModel.notifyListeners();
               },
             ),
@@ -89,7 +89,7 @@ class Settings extends StatelessWidget {
           ListTile(
             title: const Text('Кто может оставлять комментарии под моими постами?'),
             trailing: DropdownButton(
-              value: viewModel.value3,
+              value: viewModel.comments,
               items: [
                 DropdownMenuItem(
                   value: 0,
@@ -101,7 +101,7 @@ class Settings extends StatelessWidget {
                 ),
               ],
               onChanged: (value) {
-                viewModel.value3 = value!;
+                viewModel.comments = value!;
                 viewModel.notifyListeners();
               },
             ),
@@ -109,7 +109,7 @@ class Settings extends StatelessWidget {
           ListTile(
             title: const Text('Кто может отправлять мне сообщения?'),
             trailing: DropdownButton(
-              value: viewModel.value4,
+              value: viewModel.messages,
               items: [
                  DropdownMenuItem(
                   value: 0,
@@ -121,7 +121,7 @@ class Settings extends StatelessWidget {
                 ),
               ],
               onChanged: (value) {
-                viewModel.value4 = value!;
+                viewModel.messages = value!;
                 viewModel.notifyListeners();
               },
             ),
@@ -150,7 +150,7 @@ static Widget create()
   {
     return ChangeNotifierProvider(
   create: (context) => _ViewModel(context: context),
-  child: Settings(),
+  child: const  Settings(),
 );
   }
 }

@@ -75,4 +75,7 @@ abstract class ApiClient
 
   @POST("/api/User/ChangePrivacySettings")
     Future changePrivacySettings(@Body() PrivacySettingsModel model);
+
+  @GET("/api/Post/GetUsersPost")
+    Future<List<PostModel>>? getUsersPosts(@Query("take")int take, @Query("skip")int skip, @Query("userId")String userId);
 } 

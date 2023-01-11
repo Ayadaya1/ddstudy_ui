@@ -59,4 +59,6 @@ abstract class ApiRepository
   Future<PrivacySettingsModel> getPrivacySettings();
 
   Future changePrivacySettings(PrivacySettingsModel model);
+
+  Future<List<PostModel>>? getUsersPosts(int take, int skip, String userId);
 }

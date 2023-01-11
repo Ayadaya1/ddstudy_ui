@@ -132,4 +132,8 @@ class ApiDataRepository extends ApiRepository
   Future<PrivacySettingsModel> getPrivacySettings() {
     return _api.getPrivacySettings();
   }
+  @override 
+  Future<List<PostModel>>? getUsersPosts(int take, int skip, String userId) {
+    return _api.getUsersPosts(take, skip, userId);
+  }
 }
